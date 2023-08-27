@@ -1,0 +1,32 @@
+{
+    "Bill_1": {
+        "phones": [
+            "1234567890, 0454054"
+        ],
+        "birthday": "2000-08-19"
+    },
+    "Bill_2": {
+        "phones": [
+            "123456789"
+        ],
+        "birthday": "Not recorded"
+    },
+    "Bill_3": {
+        "phones": [
+            "1234567890"
+        ],
+        "birthday": "Not recorded"
+    },
+    "Bill_4": {
+        "phones": [
+            "1234567890"
+        ],
+        "birthday": "Not recorded"
+    },
+    "Bill_5": {
+        "phones": [
+            "1234567890"
+        ],
+        "birthday": "Not recorded"
+    }
+}
