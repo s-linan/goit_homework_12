@@ -1,6 +1,7 @@
 import json
 from collections import UserDict
 from datetime import datetime, date
+import re
 
 """Class Field is parent class for value classes, here is some methods to override data format
 and to compare some data of values."""
@@ -139,12 +140,43 @@ number of records for pages or for 1 per page if number was not entered or input
 
 class AddressBook(UserDict):
     N = None
+    filename = 'contacts.txt'
+
+    def recovery_data(self, filename):
+        recovery_dict = self.read_contacts_from_file(filename)
+        for name, value in recovery_dict.items():
+            replace_list = ['[', ']', "'"]
+            b_day = str(value.get('birthday'))
+            phones = str(value.get('phones'))
+            for ch in replace_list:
+                phones = phones.replace(ch, '')
+            phones = phones.split(', ')
+            if b_day.find('Not recorded') != -1:
+                temp_record = Record(Name(name), Phone(phones[0]))
+            else:
+                temp_record = Record(Name(name), Phone(phones[0]), Birthday(b_day))
+            self.add_record(temp_record)
+            iter = 1
+            while iter < len(phones):
+                temp_record.add_phone(Phone(phones[iter]))
+                iter += 1
+        for i in self.data.values():
+            print(i)
 
     def add_record(self, record: Record):
         self.data[record.name.value] = record
 
     def find_record(self, value):
-        return self.data.get(value)
+        match_list = list()
+        for record in self.data.values():
+            phone_number = ", ".join([str(ph) for ph in record.phones])
+            if record.name.value.find(value.title()) != -1 or phone_number.find(value) != -1:
+                match_list.append(str(record))
+
+        if len(match_list) < 1:
+            return 'There are no matches'
+        else:
+            return match_list
 
     def iterator(self, num=None):
         if type(num) == int and num > 0:
@@ -212,6 +244,9 @@ class AddressBook(UserDict):
 
 
 if __name__ == "__main__":
+    # if len(AddressBook().data) < 1:
+    #     AddressBook().recovery_data('contacts.txt')
+
     name_1 = Name('Bill_1')
     phone_1 = Phone('123456789')
     name_2 = Name('Bill_2')
@@ -239,9 +274,9 @@ if __name__ == "__main__":
     # ab.iterator()
     # print(ab.data)
     # print(ab.prepare_to_write())
-    ab.write_contacts_to_file('contacts.txt')
-    print(ab.read_contacts_from_file('contacts.txt'))
-
-#     ab.iterator()
-#
-#     # print('All Ok)')
+    # ab.write_contacts_to_file('contacts.txt')
+    # print(ab.read_contacts_from_file('contacts.txt'))
+    # ab.iterator()
+    # ab.iterator()
+    # print('All Ok)')
+    print(ab.find_record('bil'))
